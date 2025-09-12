@@ -1,0 +1,645 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Glog.AI",
+          "organization": "Glog.AI",
+          "fullName": "Glog, Making software more secure",
+          "version": "1.0.0",
+          "semanticVersion": "1.0.0",
+          "informationUri": "https://www.glog.ai",
+          "rules": [
+            {
+              "id": "glog-93e01738-36dd-49d8-8fda-dbf64b7a9be1",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe `shell=True` argument in the `subprocess.Popen` function in Python is a security vulnerability. It allows shell injection, which is a type of attack where an attacker can execute arbitrary commands on the host's shell. This happens when the input is not properly sanitized and is passed directly to the shell. This can lead to serious security issues like data leakage, data corruption, or even complete system takeover.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should avoid using `shell=True` whenever possible. Instead, use `shell=False` and pass the command and its arguments as a list. This way, the command is executed without a shell and the arguments are not interpreted as shell commands, thus preventing shell injection.\n\nIf you must use `shell=True`, make sure to properly sanitize and validate all input. Never trust user input. Consider using libraries or modules designed for this purpose.\n\n## Source Code Fix Recommendation\n\nHere is a fixed version of the code:\n\n```python\nimport subprocess\n\ncommand = ['ls', '-l']\nprocess = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n```\n\nIn this example, the command and its arguments are passed as a list, and `shell=True` is not used.\n\n## Library Dependencies\n\nThe code example requires the `subprocess` module, which is included in the Python Standard Library, so no additional library dependencies are needed.\n\n## OWASP Resources\n\n- [OWASP Python Security - Shell Injection](https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html)\n- [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)"
+              },
+              "properties": {
+                "tags": [
+                  "B602"
+                ]
+              }
+            },
+            {
+              "id": "glog-a3c67cb3-da23-4a88-8602-a2f2df6780f0",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nIncompatible Memory Release Function Usage Vulnerability in Python refers to a situation where a programmer uses an incorrect function to deallocate memory that was allocated using a different function. This can lead to unexpected behavior, crashes, or even security vulnerabilities. In Python, this is less common than in languages like C or C++, because Python has automatic memory management. However, it can still occur in Python when using certain libraries or extensions that interface with C or C++ code.\n\nIn the provided code snippet, the vulnerability arises from the use of `delete[]` to deallocate memory that was not allocated with `new[]`. This is a problem because `delete[]` is designed to deallocate arrays of objects, not individual objects or memory blocks allocated with other functions.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, always ensure that you are using the correct function to deallocate memory. If you allocated memory with `new[]`, deallocate it with `delete[]`. If you allocated it with `new`, deallocate it with `delete`. If you allocated it with `malloc()`, deallocate it with `free()`. \n\n## Source Code Fix Recommendation\n\nThe provided code snippet appears to be C++ rather than Python. In Python, memory management is handled automatically, so you would not typically see `delete[]` used. However, if you are interfacing with C++ code from Python, you might need to deallocate memory manually. In that case, ensure that you are using the correct deallocation function.\n\nIf `v_` was allocated with `new[]`, the provided code is correct. If it was allocated with `new`, you should use `delete v_` instead. If it was allocated with `malloc()`, you should use `free(v_)`.\n\n## Library Dependencies\n\nThe provided code snippet is C++, not Python, so it does not have any Python library dependencies. It does, however, require the C++ standard library.\n\n## OWASP Resources\n\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-761: Free of Memory not on the Heap](https://cwe.mitre.org/data/definitions/761.html)\n- [CWE-415: Double Free](https://cwe.mitre.org/data/definitions/415.html)"
+              },
+              "properties": {
+                "tags": [
+                  "resources.rules.raptor-mismatched-memory-management-cpp"
+                ]
+              }
+            },
+            {
+              "id": "glog-e4fa70ec-683d-47d4-b4b1-8fa1086b0236",
+              "help": {
+                "text": "",
+                "markdown": "### Description\n\nIn C++ programming, using weak or non-cryptographic random number generators, such as the `rand()` function, can lead to vulnerabilities, especially in security-sensitive applications. The `rand()` function is not suitable for cryptographic purposes because it generates predictable sequences of numbers if the seed is known. This predictability can be exploited by attackers to compromise the security of the application.\n\n### General Mitigation Advice\n\nTo mitigate this vulnerability, use a cryptographically secure random number generator. In C++, the `<random>` library provides better alternatives, such as `std::random_device` and `std::mt19937`, which can be used to generate random numbers more securely.\n\n### Source Code Fix Recommendation\n\nReplace the use of `rand()` with a more secure random number generator from the `<random>` library. Here is an example of how to do this:\n\n```cpp\n#include <iostream>\n#include <random>\n\nint main() {\n    // Create a random device and a Mersenne Twister random number generator\n    std::random_device rd;\n    std::mt19937 gen(rd());\n\n    // Define a distribution range\n    std::uniform_int_distribution<> dis(1, 100);\n\n    // Generate a random number\n    int random_number = dis(gen);\n\n    std::cout << \"Secure random number: \" << random_number << std::endl;\n\n    return 0;\n}\n```\n\n### Library Dependencies\n\nTo execute the above code example properly, the following library is required:\n\n- `<random>`: This library provides facilities for generating random numbers.\n\n### OWASP Resources\n\n- [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html)\n\n### Common Weakness Enumeration (CWE)\n\n- [CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)](https://cwe.mitre.org/data/definitions/338.html)"
+              },
+              "properties": {
+                "tags": [
+                  "DS148264"
+                ]
+              }
+            },
+            {
+              "id": "glog-c442b8f2-7461-4dfa-a313-b381e080be43",
+              "help": {
+                "text": "",
+                "markdown": "### Description\n\nIn C++ programming, using weak or non-cryptographic random number generators, such as the `rand()` function, can lead to vulnerabilities, especially in security-sensitive applications. The `rand()` function is not suitable for cryptographic purposes because it generates predictable sequences of numbers if the seed is known. This predictability can be exploited by attackers to compromise the security of the application.\n\n### General Mitigation Advice\n\nTo mitigate this vulnerability, use a cryptographically secure random number generator. In C++, the `<random>` library provides better alternatives, such as `std::random_device` and `std::mt19937`, which can be used to generate random numbers more securely.\n\n### Source Code Fix Recommendation\n\nReplace the use of `rand()` with a more secure random number generator from the `<random>` library. Here is an example of how to do this:\n\n```cpp\n#include <iostream>\n#include <random>\n\nint main() {\n    // Create a random device and a Mersenne Twister random number generator\n    std::random_device rd;\n    std::mt19937 gen(rd());\n\n    // Define a distribution range\n    std::uniform_int_distribution<> dis(1, 100);\n\n    // Generate a random number\n    int random_number = dis(gen);\n\n    std::cout << \"Secure random number: \" << random_number << std::endl;\n\n    return 0;\n}\n```\n\n### Library Dependencies\n\nTo execute the above code example properly, the following library is required:\n\n- `<random>`: This library provides facilities for generating random numbers.\n\n### OWASP Resources\n\n- [OWASP Cryptographic Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html)\n\n### Common Weakness Enumeration (CWE)\n\n- [CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)](https://cwe.mitre.org/data/definitions/338.html)"
+              },
+              "properties": {
+                "tags": [
+                  "DS148264"
+                ]
+              }
+            },
+            {
+              "id": "glog-20f1c72e-f884-4ca4-b698-050d28db00f5",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe `subprocess.run(command)` function in Python is used to run a new subprocess and wait for its completion. A potential command injection vulnerability can occur if the `command` parameter is constructed using unsanitized user input. This can allow an attacker to execute arbitrary commands on the system with the privileges of the Python process.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, avoid using the `subprocess.run()` function with user-supplied input. If it is necessary to use user input in a subprocess command, ensure that the input is properly sanitized and validated to prevent command injection. \n\n## Source Code Fix Recommendation\n\nInstead of passing a string to `subprocess.run()`, pass a list of arguments. This will prevent the shell from interpreting special characters which could lead to command injection. \n\nFor example, instead of:\n\n```python\nimport subprocess\ncommand = \"ls \" + user_input\nsubprocess.run(command, shell=True)\n```\n\nDo:\n\n```python\nimport subprocess\ncommand = [\"ls\", user_input]\nsubprocess.run(command)\n```\n\nIn this case, `user_input` is treated as a single argument to the `ls` command, rather than part of the command string.\n\n## Library Dependencies\n\nThe `subprocess` module is part of the Python Standard Library, so no additional library dependencies are required.\n\n## References\n\n- [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)\n- [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)"
+              },
+              "properties": {
+                "tags": [
+                  "resources.rules.dangerous-subprocess-use"
+                ]
+              }
+            },
+            {
+              "id": "glog-2cf7473f-c68d-4ea1-8aa1-d1919119b313",
+              "help": {
+                "text": "",
+                "markdown": "### Description\n\nThe vulnerability \"Security Concern: Use of subprocess call with shell=True Detected\" in Python arises when the `subprocess.run()` function is used with the `shell=True` argument. This can lead to command injection vulnerabilities, where an attacker can execute arbitrary commands on the host system if they can influence the input to the `command` variable. This is particularly dangerous if the input is derived from user input or other untrusted sources.\n\n### General Mitigation Advice\n\nTo mitigate this vulnerability, avoid using `shell=True` unless absolutely necessary. Instead, pass the command and its arguments as a list. This prevents shell injection by not invoking a shell to interpret the command string.\n\n### Source Code Fix Recommendation\n\nHere is a fixed version of the code that avoids using `shell=True`:\n\n```python\nimport subprocess\n\n# Assume 'command' is a list of command and arguments\ncommand = ['ls', '-l', '/some/directory']\nresult = subprocess.run(command, capture_output=True, text=True)\n```\n\n### Library Dependencies\n\nThe code example requires the following standard library:\n\n- `subprocess`: This is a standard library in Python and does not require any additional installation.\n\n### Relevant OWASP Resources\n\n- [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)\n- [OWASP Top Ten](https://owasp.org/www-project-top-ten/)\n\n### Common Weakness Enumeration (CWE)\n\n- [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)"
+              },
+              "properties": {
+                "tags": [
+                  "B602"
+                ]
+              }
+            },
+            {
+              "id": "glog-a530a82b-be1b-4ee3-93a9-1a09fcfac668",
+              "help": {
+                "text": "",
+                "markdown": "### Description\n\nThe vulnerability \"Security Concern: Use of subprocess call with shell=True Detected\" in Python arises when the `subprocess.run()` function is used with the `shell=True` argument. This can lead to command injection vulnerabilities, where an attacker can execute arbitrary commands on the host system if they can influence the input to the `command` variable. This is particularly dangerous if the input is derived from user input or other untrusted sources.\n\n### General Mitigation Advice\n\nTo mitigate this vulnerability, avoid using `shell=True` unless absolutely necessary. Instead, pass the command and its arguments as a list. This prevents shell injection by not invoking a shell to interpret the command string.\n\n### Source Code Fix Recommendation\n\nHere is a fixed version of the code that avoids using `shell=True`:\n\n```python\nimport subprocess\n\n# Assume 'command' is a list of command and arguments\ncommand = ['ls', '-l', '/some/directory']\nresult = subprocess.run(command, capture_output=True, text=True)\n```\n\n### Library Dependencies\n\nThe code example requires the following standard library:\n\n- `subprocess`: This is a standard library in Python and does not require any additional installation.\n\n### Relevant OWASP Resources\n\n- [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)\n- [OWASP Top Ten](https://owasp.org/www-project-top-ten/)\n\n### Common Weakness Enumeration (CWE)\n\n- [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)"
+              },
+              "properties": {
+                "tags": [
+                  "B602"
+                ]
+              }
+            },
+            {
+              "id": "glog-d486742e-2551-4173-aad0-c5ea65327693",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe `shell=True` argument in the `subprocess.Popen` function in Python is a security vulnerability. It allows shell injection, which is a type of attack where an attacker can execute arbitrary commands on the host's shell. This happens when the input is not properly sanitized and is passed directly to the shell. This can lead to serious security issues like data leakage, data corruption, or even complete system takeover.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should avoid using `shell=True` whenever possible. Instead, use `shell=False` and pass the command and its arguments as a list. This way, the command is executed without a shell and the arguments are not interpreted as shell commands, thus preventing shell injection.\n\nIf you must use `shell=True`, make sure to properly sanitize and validate all input. Never trust user input. Consider using libraries or modules designed for this purpose.\n\n## Source Code Fix Recommendation\n\nHere is a fixed version of the code:\n\n```python\nimport subprocess\n\ncommand = ['ls', '-l']\nprocess = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n```\n\nIn this example, the command and its arguments are passed as a list, and `shell=True` is not used.\n\n## Library Dependencies\n\nThe code example requires the `subprocess` module, which is included in the Python Standard Library, so no additional library dependencies are needed.\n\n## OWASP Resources\n\n- [OWASP Python Security - Shell Injection](https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html)\n- [OWASP Command Injection](https://owasp.org/www-community/attacks/Command_Injection)\n\n## Common Weakness Enumeration (CWE)\n\n- [CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')](https://cwe.mitre.org/data/definitions/78.html)"
+              },
+              "properties": {
+                "tags": [
+                  "B602"
+                ]
+              }
+            },
+            {
+              "id": "glog-3b836f11-989c-4f99-ba50-e8ce5e9b4a8d",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe `time.sleep()` function in Python is used to delay the execution of the next line of code for a specified number of seconds. An unintended `time.sleep()` function call vulnerability occurs when this function is used inappropriately, causing the program to pause for an extended period of time. This can lead to Denial of Service (DoS) attacks, where an attacker can exploit this vulnerability to make the system unresponsive or slow down significantly.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to avoid using `time.sleep()` function in production code, especially with a large sleep value. If a delay is necessary, consider using other methods such as scheduling tasks or using asynchronous programming techniques. Always validate and sanitize inputs that may affect the sleep duration.\n\n## Source Code Fix Recommendation\n\nInstead of using `time.sleep(240)`, consider using a task scheduler or an asynchronous function. Here is an example using asyncio:\n\n```python\nimport asyncio\n\nasync def main():\n    await asyncio.sleep(240)\n\nasyncio.run(main())\n```\n\n## Library Dependencies\n\nThe code example requires the `asyncio` library which is a part of the Python Standard Library.\n\n## References\n\n- [CWE-400: Uncontrolled Resource Consumption](https://cwe.mitre.org/data/definitions/400.html)\n\nPlease note that the links provided are active and accessible to anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "tags": [
+                  "resources.rules.arbitrary-sleep"
+                ]
+              }
+            },
+            {
+              "id": "glog-6c24d04c-b5b5-4a43-b11c-6fae56b7c3e0",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe vulnerability \"Duplicate Assignment of 'Time Stamp' Key in 'df_selected'\" refers to the situation where the same key in a dictionary or a DataFrame is assigned a value more than once. In the provided code snippet, the 'Time Stamp' column of the 'df_selected' DataFrame is being overwritten twice. This could lead to unexpected behavior or data loss if the first assignment was intended to be preserved.\n\n## Mitigation Advice\n\nTo mitigate this issue, ensure that each key is assigned only once, or that subsequent assignments are intentional. If the two operations need to be performed on the same column, consider combining them into a single operation if possible.\n\n## Source Code Fix Recommendation\n\nHere is a recommended fix for the provided code snippet:\n\n```python\ndf_selected[\"Time Stamp\"] = df_selected[\"Time Stamp\"].apply(str_to_sec)\ndf_selected[\"Time Stamp\"] -= df_selected[\"Time Stamp\"].min()\n```\n\nIn this fix, the second assignment is replaced with an in-place subtraction operation, which modifies the existing 'Time Stamp' column without overwriting it.\n\n## Library Dependencies\n\nThe code example requires the following Python libraries:\n\n- pandas\n\n## References\n\n- [Common Weakness Enumeration (CWE)](https://cwe.mitre.org/)\n\nPlease note that there is no direct CWE for this specific issue. However, it can be related to [CWE-1021: Improper Restriction of Rendered UI Layers or Frames](https://cwe.mitre.org/data/definitions/1021.html) as it can lead to unexpected behavior due to improper handling of data in the DataFrame."
+              },
+              "properties": {
+                "tags": [
+                  "resources.rules.useless-assignment-keyed"
+                ]
+              }
+            },
+            {
+              "id": "glog-776faf14-7b56-4f73-bbde-790426b90826",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe `pickle` module in Python is used for serializing (pickling) and deserializing (unpickling) Python object structures. However, it is not secure against erroneous or maliciously constructed data. When unpickling data, a malicious actor can execute arbitrary code, leading to a potential security risk. This is known as a pickle-dependent function arbitrary code execution vulnerability.\n\nIn the provided code, the `torch.load()` function is used to load a serialized PyTorch model from a file. This function uses pickle under the hood, which can lead to the mentioned vulnerability if the loaded file is maliciously crafted.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, you should avoid using `pickle` or any function that uses `pickle` under the hood to load data from an untrusted source. Instead, consider using safer alternatives for serialization and deserialization, such as `json` or `yaml`, which do not allow the execution of arbitrary code.\n\n## Source Code Fix Recommendation\n\nIf you must use `torch.load()`, ensure that the loaded file comes from a trusted source and its integrity is verified. If possible, consider saving your PyTorch models using `torch.jit.save()` and loading them using `torch.jit.load()`, which do not use `pickle` and are thus safer.\n\n```python\n# Save model\ntorch.jit.save(model, model_file)\n\n# Load model\nlora_state_dict = torch.jit.load(model_file, map_location=\"cpu\")\n```\n\n## Library Dependencies\n\nThe provided code requires the following library to execute properly:\n\n- PyTorch (`torch`)\n\n## References\n\n- [OWASP Python Security - Deserialization](https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html#python)\n- [CWE-502: Deserialization of Untrusted Data](https://cwe.mitre.org/data/definitions/502.html)"
+              },
+              "properties": {
+                "tags": [
+                  "trailofbits.python.pickles-in-pytorch.pickles-in-pytorch"
+                ]
+              }
+            },
+            {
+              "id": "glog-c86a9a15-b859-4be9-99d9-e14a23569b5d",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe \"Untrusted Data Deserialization Vulnerability in Pickle Modules\" is a security vulnerability in Python programming language that occurs when an application deserializes data from an untrusted source without proper validation. The `pickle` module in Python is used for serializing and deserializing Python object structures. However, it is not safe to deserialize data that comes from an untrusted or unauthenticated source. This is because the `pickle` module is capable of executing arbitrary code during deserialization, which can lead to serious security issues such as remote code execution (RCE), denial of service (DoS), and other types of attacks.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to avoid using the `pickle` module to deserialize data from untrusted sources. Instead, use safer alternatives such as `json` or `csv` modules which do not have the capability to execute arbitrary code during deserialization. If it is absolutely necessary to use `pickle`, ensure that the data is coming from a trusted and authenticated source.\n\n## Source Code Fix Recommendation\n\nReplace the `pickle` module with a safer alternative such as `json`. Here is an example of how to do it:\n\n```python\nimport json\n\n# Assuming `fo` is a file object\ndict = json.load(fo)\n```\n\n## Library Dependencies\n\nThe code example requires the `pickle` module which is a built-in module in Python and does not require any additional installation.\n\n## References\n\n- [OWASP Deserialization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html)\n- [CWE-502: Deserialization of Untrusted Data](https://cwe.mitre.org/data/definitions/502.html)\n\nPlease note that the links provided are active and accessible to anonymous users at the time of writing this report."
+              },
+              "properties": {
+                "tags": [
+                  "B301"
+                ]
+              }
+            },
+            {
+              "id": "glog-a1477113-0ab5-48b4-b9d3-8eb68f9dfcab",
+              "help": {
+                "text": "",
+                "markdown": "## Description\n\nThe vulnerability in URL Audit for Permitted Schemes in Python is a security issue where an application does not properly validate the schemes of the URLs it processes. This can lead to various attacks such as SSRF (Server Side Request Forgery), where an attacker can make the server perform requests that it should not be able to. In the provided code, the URL is directly passed to `urllib.request.urlretrieve` without any validation, which can be exploited if an attacker can control the URL.\n\n## Mitigation Advice\n\nTo mitigate this vulnerability, it is recommended to validate the URL before processing it. This can be done by checking the scheme of the URL and ensuring it is in a list of permitted schemes (e.g., 'http', 'https'). Additionally, it is also recommended to use a safe library or function that automatically validates the URL scheme.\n\n## Source Code Fix Recommendation\n\nHere is a fixed version of the provided code:\n\n```python\nimport urllib.parse\n\nurl = \"https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz\"\nparsed_url = urllib.parse.urlparse(url)\n\nif parsed_url.scheme not in ['http', 'https']:\n    raise ValueError(f'Invalid URL scheme: {parsed_url.scheme}')\n\nurllib.request.urlretrieve(url, data_download_path_python)\n```\n\n## Library Dependencies\n\nThe code example requires the following Python standard library:\n\n- `urllib`\n\n## References\n\n- [OWASP SSRF prevention cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)\n- [CWE-918: Server-Side Request Forgery (SSRF)](https://cwe.mitre.org/data/definitions/918.html)"
+              },
+              "properties": {
+                "tags": [
+                  "B310"
+                ]
+              }
+            }
+          ],
+          "language": "en-US",
+          "contents": [
+            "localizedData",
+            "nonLocalizedData"
+          ],
+          "isComprehensive": false
+        }
+      },
+      "language": "en-US",
+      "results": [
+        {
+          "ruleId": "glog-93e01738-36dd-49d8-8fda-dbf64b7a9be1",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "\"Shell=True Subprocess Call Security Vulnerability Detected\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo/NPU-GPU-Pipeline/npu_gpu_utils.py"
+                },
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 15,
+                  "endLine": 9,
+                  "endColumn": 100,
+                  "snippet": {
+                    "text": "    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 8,
+                  "endLine": 10,
+                  "snippet": {
+                    "text": "    command = r'pnputil /enum-devices /bus PCI /deviceids '\n    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n    stdout, stderr = process.communicate()\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "HIGH",
+            "issue_confidence": "HIGH"
+          }
+        },
+        {
+          "ruleId": "glog-a3c67cb3-da23-4a88-8602-a2f2df6780f0",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Incompatible Memory Release Function Usage Vulnerability"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Ryzen-AI-CVML-Library/include/cvml-types.h",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 320,
+                  "startColumn": 13,
+                  "endLine": 320,
+                  "endColumn": 25,
+                  "snippet": {
+                    "text": "    if (v_) delete[] v_;"
+                  }
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "matchBasedId/v1": "45b9d56c6b22853f249e1f00dd0c91e744ec44a6cc7250764dab75acef95d38d87d3acbcf57152b0eceaafec88a5c6c5e55c688f6c89d78a803fe032bd4ef859_2"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "glog-e4fa70ec-683d-47d4-b4b1-8fa1086b0236",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "\"Avoid Using Weak or Non-Cryptographic Random Number Generators\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tutorial/getting_started_resnet/bf16/app/main.cpp"
+                },
+                "region": {
+                  "startLine": 315,
+                  "startColumn": 107,
+                  "endLine": 315,
+                  "endColumn": 112,
+                  "charOffset": 13622,
+                  "charLength": 5,
+                  "snippet": {
+                    "text": "rand(",
+                    "rendered": {
+                      "text": "rand(",
+                      "markdown": "`rand(`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Important",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "Cryptography.PRNG.Weak"
+            ]
+          }
+        },
+        {
+          "ruleId": "glog-c442b8f2-7461-4dfa-a313-b381e080be43",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "\"Avoid Using Weak or Non-Cryptographic Random Number Generators\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tutorial/getting_started_resnet/bf16/app/main.cpp"
+                },
+                "region": {
+                  "startLine": 100,
+                  "startColumn": 85,
+                  "endLine": 100,
+                  "endColumn": 90,
+                  "charOffset": 3981,
+                  "charLength": 5,
+                  "snippet": {
+                    "text": "rand(",
+                    "rendered": {
+                      "text": "rand(",
+                      "markdown": "`rand(`"
+                    }
+                  },
+                  "sourceLanguage": "cpp"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "DevSkimSeverity": "Important",
+            "DevSkimConfidence": "High",
+            "tags": [
+              "Cryptography.PRNG.Weak"
+            ]
+          }
+        },
+        {
+          "ruleId": "glog-20f1c72e-f884-4ca4-b698-050d28db00f5",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Potential Command Injection Vulnerability Detected in 'run' Subprocess Function"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo/ASR/Whisper/dynamic_to_static.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 83,
+                  "startColumn": 9,
+                  "endLine": 83,
+                  "endColumn": 32,
+                  "snippet": {
+                    "text": "        subprocess.run(command)"
+                  }
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "matchBasedId/v1": "021027c241a811409b397ceed9fc69d74d910fb75f629c5d2fb21eba8d1b2cf2f2c83b5d3fc77c669980273c8661baf3aa1da32911a5d3a6e3cfdfbd41b24c35_0"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "glog-2cf7473f-c68d-4ea1-8aa1-d1919119b313",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "\"Security Concern: Use of subprocess call with shell=True Detected\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "onnx-benchmark/utilities.py"
+                },
+                "region": {
+                  "startLine": 704,
+                  "startColumn": 14,
+                  "endLine": 704,
+                  "endColumn": 81,
+                  "snippet": {
+                    "text": "    result = subprocess.run(command, capture_output=True, text=True, shell=True)\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 703,
+                  "endLine": 705,
+                  "snippet": {
+                    "text": "    command = f'powershell -Command \"Get-WmiObject Win32_PnPSignedDriver | Where-Object {{ $_.DeviceName -like \\'*{device_name}*\\' }} | Select-Object DeviceName, DriverVersion\"'\n    result = subprocess.run(command, capture_output=True, text=True, shell=True)\n    if result.returncode != 0:\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "HIGH",
+            "issue_confidence": "HIGH"
+          }
+        },
+        {
+          "ruleId": "glog-a530a82b-be1b-4ee3-93a9-1a09fcfac668",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "\"Security Concern: Use of subprocess call with shell=True Detected\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "onnx-benchmark/utilities.py"
+                },
+                "region": {
+                  "startLine": 498,
+                  "startColumn": 14,
+                  "endLine": 498,
+                  "endColumn": 81,
+                  "snippet": {
+                    "text": "    result = subprocess.run(command, capture_output=True, text=True, shell=True)\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 497,
+                  "endLine": 499,
+                  "snippet": {
+                    "text": "    dbprint(command)\n    result = subprocess.run(command, capture_output=True, text=True, shell=True)\n    info = result.stdout.strip()\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "HIGH",
+            "issue_confidence": "HIGH"
+          }
+        },
+        {
+          "ruleId": "glog-d486742e-2551-4173-aad0-c5ea65327693",
+          "kind": "fail",
+          "level": "error",
+          "message": {
+            "text": "\"Shell=True Subprocess Call Security Vulnerability Detected\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "onnx-benchmark/utilities.py"
+                },
+                "region": {
+                  "startLine": 1815,
+                  "startColumn": 15,
+                  "endLine": 1815,
+                  "endColumn": 100,
+                  "snippet": {
+                    "text": "    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 1814,
+                  "endLine": 1816,
+                  "snippet": {
+                    "text": "    command = r'pnputil /enum-devices /bus PCI /deviceids '\n    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n    stdout, stderr = process.communicate()\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "HIGH",
+            "issue_confidence": "HIGH"
+          }
+        },
+        {
+          "ruleId": "glog-3b836f11-989c-4f99-ba50-e8ce5e9b4a8d",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Unintended time.sleep() function call vulnerability"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo/NPU-GPU-Pipeline/run_with_timeout.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 5,
+                  "endLine": 13,
+                  "endColumn": 20,
+                  "snippet": {
+                    "text": "    time.sleep(240)"
+                  }
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "matchBasedId/v1": "1b111efcff3ae2bf2e4d7ca900e7351623601ab51501cb9923e4818ca9fc1f5c29c7456fae0859f9e20b07005ede0a285a374dbc69c436aa1eddce30902c7654_0"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "glog-6c24d04c-b5b5-4a43-b11c-6fae56b7c3e0",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Duplicate Assignment of 'Time Stamp' Key in 'df_selected'\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo/NPU-GPU-Pipeline/power_utils_filtered.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 60,
+                  "startColumn": 5,
+                  "endLine": 63,
+                  "endColumn": 6,
+                  "snippet": {
+                    "text": "    df_selected[\"Time Stamp\"] = df_selected[\"Time Stamp\"].apply(str_to_sec)\n    df_selected[\"Time Stamp\"] = (\n        df_selected[\"Time Stamp\"] - df_selected[\"Time Stamp\"].min()\n    )"
+                  }
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "matchBasedId/v1": "5467707d2033bdfd57dbd3612d0280bfc5a3284678efbeba92ed8e2c543ff4cafbe0580b9a9e3c7d55003e10fcafd95169b0ce65d39382ffdcf8cd26806e65a9_0"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "glog-776faf14-7b56-4f73-bbde-790426b90826",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Pickle-dependent functions may lead to arbitrary code execution vulnerability\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "demo/NPU-GPU-Pipeline/stable_diffusion/user_script.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 73,
+                  "startColumn": 23,
+                  "endLine": 73,
+                  "endColumn": 65,
+                  "snippet": {
+                    "text": "    lora_state_dict = torch.load(model_file, map_location=\"cpu\")"
+                  }
+                }
+              }
+            }
+          ],
+          "fingerprints": {
+            "matchBasedId/v1": "6948c1aa1026af7e013ca904a28db8c4eb302fd366ada507f38e7165fed35af2c6160286ac820e0fc3e154f750c6c1a26292d970385569a957670547caa7a904_0"
+          },
+          "properties": {}
+        },
+        {
+          "ruleId": "glog-c86a9a15-b859-4be9-99d9-e14a23569b5d",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "Untrusted Data Deserialization Vulnerability in Pickle Modules"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tutorial/getting_started_resnet/bf16/predict.py"
+                },
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 16,
+                  "endLine": 22,
+                  "endColumn": 50,
+                  "snippet": {
+                    "text": "        dict = pickle.load(fo, encoding='latin1')\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 21,
+                  "endLine": 23,
+                  "snippet": {
+                    "text": "    with open(file,'rb') as fo:\n        dict = pickle.load(fo, encoding='latin1')\n    return dict\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "MEDIUM",
+            "issue_confidence": "HIGH"
+          }
+        },
+        {
+          "ruleId": "glog-a1477113-0ab5-48b4-b9d3-8eb68f9dfcab",
+          "kind": "fail",
+          "level": "warning",
+          "message": {
+            "text": "\"Vulnerability in URL Audit for Permitted Schemes\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "tutorial/getting_started_resnet/bf16/prepare_model_data.py"
+                },
+                "region": {
+                  "startLine": 140,
+                  "startColumn": 5,
+                  "endLine": 140,
+                  "endColumn": 117,
+                  "snippet": {
+                    "text": "    urllib.request.urlretrieve(\"https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz\", data_download_path_python)\n"
+                  }
+                },
+                "contextRegion": {
+                  "startLine": 139,
+                  "endLine": 141,
+                  "snippet": {
+                    "text": "    data_download_path_bin = data_dir / \"cifar-10-binary.tar.gz\"\n    urllib.request.urlretrieve(\"https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz\", data_download_path_python)\n    urllib.request.urlretrieve(\"https://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz\", data_download_path_bin)\n"
+                  }
+                }
+              }
+            }
+          ],
+          "properties": {
+            "issue_severity": "MEDIUM",
+            "issue_confidence": "HIGH"
+          }
+        }
+      ],
+      "newlineSequences": [
+        "\r\n",
+        "\n"
+      ]
+    }
+  ]
+}
